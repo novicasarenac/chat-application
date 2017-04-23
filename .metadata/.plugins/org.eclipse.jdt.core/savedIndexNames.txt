@@ -1,0 +1,5 @@
+INDEX VERSION 1.130+C:\Users\Novica\Desktop\chat-application\.metadata\.plugins\org.eclipse.jdt.core
+3727716940.index
+190778164.index
+3907001847.index
+1032807567.index
