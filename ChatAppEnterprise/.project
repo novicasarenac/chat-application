@@ -3,8 +3,8 @@
 	<name>ChatAppEnterprise</name>
 	<comment></comment>
 	<projects>
-		<project>ChatAppWeb</project>
 		<project>ChatAppEJB</project>
+		<project>ChatAppWeb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
