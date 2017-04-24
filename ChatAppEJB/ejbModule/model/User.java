@@ -16,13 +16,6 @@ public class User implements Serializable{
 		this.username = username;
 		this.password = password;
 	}
-	
-	public User(String username, String password, Host host) {
-		super();
-		this.username = username;
-		this.password = password;
-		this.host = host;
-	}
 
 	public String getUsername() {
 		return username;

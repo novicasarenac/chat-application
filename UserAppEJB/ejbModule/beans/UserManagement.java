@@ -48,9 +48,10 @@ public class UserManagement implements UserManagementLocal {
 	}
 
 	@Override
-	public Boolean login(String username, String password, Host host) throws InvalidCredentialsException, AlreadyLoggedOn {
+	public User login(String username, String password, Host host) throws InvalidCredentialsException, AlreadyLoggedOn {
+		User loggedUser = null;
 		if(usersOffline.containsKey(username)) {
-			User loggedUser = usersOffline.get(username);
+			loggedUser = usersOffline.get(username);
 			loggedUser.setHost(host);
 			usersOnline.put(loggedUser.getUsername(), loggedUser);
 			usersOffline.remove(username);
@@ -58,15 +59,15 @@ public class UserManagement implements UserManagementLocal {
 			throw new AlreadyLoggedOn("User is already logged on");
 		} else throw new InvalidCredentialsException("Invalid credentials");
 		
-		return true;
+		return loggedUser;
 	}
 
 	@Override
-	public Boolean logout(User logout) {
+	public User logout(User logout) {
 		usersOnline.remove(logout.getUsername());
 		logout.setHost(null);
 		usersOffline.put(logout.getUsername(), logout);
-		return true;
+		return logout;
 	}
 
 	@Override

@@ -14,7 +14,7 @@ import model.User;
 public interface UserManagementLocal {
 	
 	public User register(String username, String password) throws UsernameExistsException;
-	public Boolean login(String username, String password, Host host) throws InvalidCredentialsException, AlreadyLoggedOn;
-	public Boolean logout(User logout);
+	public User login(String username, String password, Host host) throws InvalidCredentialsException, AlreadyLoggedOn;
+	public User logout(User logout);
 	public List<User> getAllUsers();
 }
