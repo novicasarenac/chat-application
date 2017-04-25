@@ -23,10 +23,12 @@ angular.module('chatApplication.LoginController', [])
 		   function send(userToLogin) {
 			   try {
 				   message = {
-						   user: userToLogin,
-						   type: 'REQUEST'
-				   }
-				   socket.send(userToLogin);
+						   'username' : userToLogin.username,
+						   'password' : userToLogin.password,
+						   'type' : 'LOGIN'
+				   };
+				   messageToSent = JSON.stringify(message);
+				   socket.send(messageToSent);
 				   console.log("message sent");
 			   } catch(exception) {
 				   console.log("message sending failed");

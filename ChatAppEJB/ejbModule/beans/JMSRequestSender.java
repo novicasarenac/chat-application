@@ -9,33 +9,30 @@ import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.ObjectMessage;
 
-import jms_messages.UserResponseMessage;
-import model.User;
+import jms_messages.UserRequestMessage;
 
 @Stateless
-public class ResponseSender implements ResponseSenderLocal {
+public class JMSRequestSender implements JMSRequestSenderLocal {
 	
 	@Inject
 	JMSContext context;
 
-	@Resource(mappedName = "java:/jms/queue/userResponse")
+	@Resource(mappedName = "java:/jms/queue/userRequest")
 	private Destination destination;
 	
 	@Override
-	public void sendResponse(UserResponseMessage userResponseMessage) {
+	public void sendRequest(UserRequestMessage userRequestMessage) {
 		try {
 			ObjectMessage message = context.createObjectMessage();
-			message.setObject(userResponseMessage);
+			message.setObject(userRequestMessage);
 			JMSProducer producer = context.createProducer();
 			producer.send(destination, message);
-			System.out.println("---------------------BRAVO-------------------");
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public ResponseSender() {
+	public JMSRequestSender() {
 		super();
 	}
-	
 }
