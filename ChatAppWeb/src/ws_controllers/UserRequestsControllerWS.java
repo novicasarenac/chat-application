@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -29,10 +31,12 @@ public class UserRequestsControllerWS {
 		}
 	}
 	
+	@OnClose
 	public void onClose(Session session) {
 		sessions.remove(session);
 	}
 	
+	@OnError
 	public void onError(Session session, Throwable t) {
 		sessions.remove(session);
 		t.printStackTrace();
