@@ -1,5 +1,7 @@
 package mdb;
 
+import java.util.List;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
@@ -14,6 +16,8 @@ import exceptions.AlreadyLoggedOn;
 import exceptions.InvalidCredentialsException;
 import exceptions.UsernameExistsException;
 import jms_messages.UserRequestMessage;
+import jms_messages.UserResponseMessage;
+import jms_messages.UserResponseStatus;
 import model.User;
 
 @MessageDriven(activationConfig = {
@@ -36,20 +40,23 @@ public class UserRequestsController implements MessageListener{
 			switch(userRequestMessage.getType()){
 				case REGISTER: {
 					User user = userManagement.register(userRequestMessage.getUsername(), userRequestMessage.getPassword());
+					System.out.println("----------------------------------------------------------------------dasdasdasdsadasd");
 					break;
 				}
 				case LOGIN: {
 					User user = userManagement.login(userRequestMessage.getUsername(), userRequestMessage.getPassword(), userRequestMessage.getHost());
-					responseSender.sendResponse(user);
+					responseSender.sendResponse(new UserResponseMessage(user, userRequestMessage.getSessionId(), UserResponseStatus.LOGGED_ON));
 					break;
 				}
 				case LOGOUT: {
 					User user = userManagement.logout(new User(userRequestMessage.getUsername(), userRequestMessage.getPassword(), userRequestMessage.getHost()));
-					responseSender.sendResponse(user);
+					responseSender.sendResponse(new UserResponseMessage(user, userRequestMessage.getSessionId(), UserResponseStatus.LOGGED_OFF));
 					break;
 				}
 				case GETALLUSERS: {
-					
+					List<User> users = userManagement.getAllUsers();
+					responseSender.sendResponse(new UserResponseMessage(users, userRequestMessage.getSessionId(), UserResponseStatus.ALL_USERS));
+					break;
 				}
 					
 					

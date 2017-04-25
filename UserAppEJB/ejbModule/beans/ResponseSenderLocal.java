@@ -2,10 +2,11 @@ package beans;
 
 import javax.ejb.Local;
 
+import jms_messages.UserResponseMessage;
 import model.User;
 
 @Local
 public interface ResponseSenderLocal {
 	
-	public void sendResponse(User user);
+	void sendResponse(UserResponseMessage userResponseMessage);
 }
