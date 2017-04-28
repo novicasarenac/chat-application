@@ -1,7 +1,12 @@
 <div ng-controller="LoginController">
-	Username:
-	<input ng-model="userToLogin.username"/>
-	Password:
-	<input ng-model="userToLogin.password"/>
-	<button type="button" ng-click="login(userToLogin)">Login</button>
+	<div class="container" >
+        <div style="margin-left: 18%; margin-bottom: 20%" class="carousel-caption col-xs-3">
+            <form role="form">
+                <p><input ng-model="userToLogin.username" class="form-control form-control-lg" placeholder="Enter your username"></p>
+                <p><input ng-model="userToLogin.password" type="password" class="form-control form-control-lg" placeholder="Enter your password"></p>
+                <p><button ng-click="login(userToLogin)" type="submit" class="btn btn-primary btn-md">Login</button></p>
+            </form>
+        </div>
+    </div>
+
 </div>

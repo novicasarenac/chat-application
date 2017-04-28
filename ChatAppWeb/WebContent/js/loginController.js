@@ -1,5 +1,5 @@
 angular.module('chatApplication.LoginController', [])
-	   .controller('LoginController', function($scope) {
+	   .controller('LoginController', function($scope, $rootScope, $location) {
 		   var host = "ws://localhost:8080/ChatAppWeb/userRequest";
 		   try {
 			   socket = new WebSocket(host);
@@ -8,8 +8,12 @@ angular.module('chatApplication.LoginController', [])
 				   console.log("Socket connection opened");
 			   }
 			   
-			   socket.onmessage = function() {
-				   console.log("message received");
+			   socket.onmessage = function(message) {
+				   var payload = JSON.parse(message.data);
+				   sessionStorage.setItem('loggedUser', payload.user.username);
+				   $rootScope.$apply(function() {
+					   $location.path('/messaging');
+				   });
 			   }
 			   
 			   socket.onclose = function() {

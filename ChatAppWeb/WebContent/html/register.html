@@ -1,3 +1,12 @@
 <div ng-controller="RegisterController">
-	REGISTER
+	
+	<div class="container" >
+        <div style="margin-left: 18%; margin-bottom: 20%" class="carousel-caption col-xs-3">
+            <form role="form">
+                <p><input ng-model="userToRegister.username" class="form-control form-control-lg" placeholder="Enter your username"></p>
+                <p><input ng-model="userToRegister.password" type="password" class="form-control form-control-lg" placeholder="Enter your password"></p>
+                <p><button ng-click="register(userToRegister)" type="submit" class="btn btn-primary btn-md">Register</button></p>
+            </form>
+        </div>
+    </div>
 </div>

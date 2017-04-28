@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
-import javax.ejb.Singleton;
+import javax.ejb.MessageDriven;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -18,11 +22,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import beans.JMSRequestSenderLocal;
 import jms_messages.UserRequestMessage;
 import jms_messages.UserRequestMessageType;
+import jms_messages.UserResponseMessage;
 import utils.WSMessage;
 
 @ServerEndpoint("/userRequest")
-@Singleton
-public class UserRequestsControllerWS {
+@MessageDriven(activationConfig = {
+		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+		@ActivationConfigProperty(propertyName = "destination", propertyValue = "java:/jms/queue/userResponseTransfer" )
+})
+public class UserRequestsControllerWS implements MessageListener{
 
 	List<Session> sessions = new ArrayList<>();
 	
@@ -52,7 +60,6 @@ public class UserRequestsControllerWS {
 	
 	public void processMessage(WSMessage wsmessage, Session session) {
 		UserRequestMessage userRequestMessage = new UserRequestMessage();
-		sessions.add(session);
 		userRequestMessage.setSessionId(session.getId());
 		if(wsmessage.getType() == UserRequestMessageType.REGISTER) {
 			userRequestMessage.setType(UserRequestMessageType.REGISTER);
@@ -73,6 +80,27 @@ public class UserRequestsControllerWS {
 		jmsSender.sendRequest(userRequestMessage);
 	}
 	
+	public void processResponse(UserResponseMessage userResponseMessage) {
+		Session session = null;
+		for(Session s : sessions) {
+			if(s.getId().equals(userResponseMessage.getSessionId()))
+				session = s;
+		}
+		if(session.isOpen())
+			System.out.println("--------------------*********OTVORENA SESIJA");
+		switch(userResponseMessage.getUserResponseStatus()) {
+			case LOGGED_ON: {
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonObject = mapper.writeValueAsString(userResponseMessage);
+					session.getBasicRemote().sendText(jsonObject);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	@OnClose
 	public void onClose(Session session) {
 		sessions.remove(session);
@@ -82,5 +110,17 @@ public class UserRequestsControllerWS {
 	public void onError(Session session, Throwable t) {
 		sessions.remove(session);
 		t.printStackTrace();
+	}
+
+	//user response message listener
+	@Override
+	public void onMessage(Message message) {
+		ObjectMessage objectMessage = (ObjectMessage) message;
+		try {
+			UserResponseMessage userResponseMessage = (UserResponseMessage) objectMessage.getObject();
+			processResponse(userResponseMessage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

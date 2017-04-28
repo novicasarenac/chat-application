@@ -39,13 +39,25 @@ public class UserRequestsController implements MessageListener{
 			UserRequestMessage userRequestMessage = (UserRequestMessage) objectMessage.getObject();
 			switch(userRequestMessage.getType()){
 				case REGISTER: {
-					User user = userManagement.register(userRequestMessage.getUsername(), userRequestMessage.getPassword());
-					System.out.println("----------------------------------------------------------------------dasdasdasdsadasd");
+					User user = null;
+					try {
+						user = userManagement.register(userRequestMessage.getUsername(), userRequestMessage.getPassword());
+						responseSender.sendResponse(new UserResponseMessage(user, userRequestMessage.getSessionId(), UserResponseStatus.REGISTERED));
+					} catch(UsernameExistsException e) {
+						responseSender.sendResponse(new UserResponseMessage(user, userRequestMessage.getSessionId(), UserResponseStatus.USERNAME_EXISTS));
+					}
 					break;
 				}
 				case LOGIN: {
-					User user = userManagement.login(userRequestMessage.getUsername(), userRequestMessage.getPassword(), userRequestMessage.getHost());
-					responseSender.sendResponse(new UserResponseMessage(user, userRequestMessage.getSessionId(), UserResponseStatus.LOGGED_ON));
+					User user = null;
+					try {
+						user = userManagement.login(userRequestMessage.getUsername(), userRequestMessage.getPassword(), userRequestMessage.getHost());
+						responseSender.sendResponse(new UserResponseMessage(user, userRequestMessage.getSessionId(), UserResponseStatus.LOGGED_ON));
+					} catch(InvalidCredentialsException e) {
+						responseSender.sendResponse(new UserResponseMessage(user, userRequestMessage.getSessionId(), UserResponseStatus.INVALID_CREDENTIALS));
+					} catch (AlreadyLoggedOn e) {
+						responseSender.sendResponse(new UserResponseMessage(user, userRequestMessage.getSessionId(), UserResponseStatus.ALREADY_LOGGED));
+					}
 					break;
 				}
 				case LOGOUT: {
@@ -62,15 +74,6 @@ public class UserRequestsController implements MessageListener{
 					
 			}
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UsernameExistsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidCredentialsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (AlreadyLoggedOn e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

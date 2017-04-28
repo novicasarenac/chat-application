@@ -11,5 +11,8 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
 		})
 		.when('/register', {
 			templateUrl : 'html/register.html'
+		})
+		.when('/messaging', {
+			templateUrl : 'html/messaging.html'
 		});
 }]);

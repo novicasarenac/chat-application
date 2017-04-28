@@ -28,7 +28,6 @@ public class ResponseSender implements ResponseSenderLocal {
 			message.setObject(userResponseMessage);
 			JMSProducer producer = context.createProducer();
 			producer.send(destination, message);
-			System.out.println("---------------------BRAVO-------------------");
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
