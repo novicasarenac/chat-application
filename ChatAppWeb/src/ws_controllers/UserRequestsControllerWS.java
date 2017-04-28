@@ -98,6 +98,15 @@ public class UserRequestsControllerWS implements MessageListener{
 					e.printStackTrace();
 				}
 			}
+			case REGISTERED: {
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonObject = mapper.writeValueAsString(userResponseMessage);
+					session.getBasicRemote().sendText(jsonObject);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
