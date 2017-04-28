@@ -9,9 +9,13 @@ angular.module('chatApplication.RegisterController', [])
 			   }
 			   
 			   socket.onmessage = function(message) {
-				   $rootScope.$apply(function() {
-					   $location.path('/welcome');
-				   });
+				   if(message.data === 'USERNAME_EXISTS') {
+					   alert('Username exists. Please choose another one!')
+				   } else {
+					   $rootScope.$apply(function() {
+						   $location.path('/welcome');
+					   });
+				   }
 			   }
 			   
 			   socket.onclose = function() {

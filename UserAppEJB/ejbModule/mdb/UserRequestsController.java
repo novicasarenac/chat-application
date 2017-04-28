@@ -74,7 +74,6 @@ public class UserRequestsController implements MessageListener{
 					
 			}
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

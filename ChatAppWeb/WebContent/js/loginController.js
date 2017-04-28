@@ -9,11 +9,17 @@ angular.module('chatApplication.LoginController', [])
 			   }
 			   
 			   socket.onmessage = function(message) {
-				   var payload = JSON.parse(message.data);
-				   sessionStorage.setItem('loggedUser', payload.user.username);
-				   $rootScope.$apply(function() {
-					   $location.path('/messaging');
-				   });
+				   if(message.data === 'INVALID_CREDENTIALS') {
+					   alert('Wrong username or password!');
+				   } else if(message.data === 'ALREADY_LOGGED') {
+					   alert('You are already logged on');
+				   } else {
+					   var payload = JSON.parse(message.data);
+					   sessionStorage.setItem('loggedUser', payload.user.username);
+					   $rootScope.$apply(function() {
+						   $location.path('/messaging');
+					   });
+				   }
 			   }
 			   
 			   socket.onclose = function() {

@@ -98,10 +98,37 @@ public class UserRequestsControllerWS implements MessageListener{
 					e.printStackTrace();
 				}
 			}
+			case INVALID_CREDENTIALS: {
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonObject = userResponseMessage.getUserResponseStatus().toString();
+					session.getBasicRemote().sendText(jsonObject);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			case ALREADY_LOGGED: {
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonObject = userResponseMessage.getUserResponseStatus().toString();
+					session.getBasicRemote().sendText(jsonObject);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			case REGISTERED: {
 				try {
 					ObjectMapper mapper = new ObjectMapper();
 					String jsonObject = mapper.writeValueAsString(userResponseMessage);
+					session.getBasicRemote().sendText(jsonObject);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			case USERNAME_EXISTS: {
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonObject = userResponseMessage.getUserResponseStatus().toString();
 					session.getBasicRemote().sendText(jsonObject);
 				} catch (Exception e) {
 					e.printStackTrace();
