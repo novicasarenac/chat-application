@@ -19,7 +19,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import beans.JMSRequestSenderLocal;
+import beans.UserRequestSenderLocal;
 import jms_messages.UserRequestMessage;
 import jms_messages.UserRequestMessageType;
 import jms_messages.UserResponseMessage;
@@ -35,7 +35,7 @@ public class UserRequestsControllerWS implements MessageListener{
 	List<Session> sessions = new ArrayList<>();
 	
 	@EJB
-	JMSRequestSenderLocal jmsSender;
+	UserRequestSenderLocal userRequestSender;
 	
 	@OnOpen
 	public void onOpen(Session session) {
@@ -77,7 +77,7 @@ public class UserRequestsControllerWS implements MessageListener{
 			userRequestMessage.setType(UserRequestMessageType.GETALLUSERS);
 		}
 		
-		jmsSender.sendRequest(userRequestMessage);
+		userRequestSender.sendRequest(userRequestMessage);
 	}
 	
 	public void processResponse(UserResponseMessage userResponseMessage) {

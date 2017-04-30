@@ -1,6 +1,7 @@
 package jms_messages;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import model.User;
@@ -8,7 +9,7 @@ import model.User;
 public class UserResponseMessage implements Serializable {
 
 	private User user;
-	private List<User> allUsers;
+	private List<User> allUsers = new ArrayList<User>();
 	private String sessionId;
 	private UserResponseStatus userResponseStatus;
 

@@ -3,6 +3,8 @@ package rest_controllers;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -19,6 +21,7 @@ import jms_messages.UserResponseStatus;
 import model.User;
 
 @Path("/user")
+@Stateless
 public class UserRequestsRESTController {
 
 	@EJB
@@ -40,6 +43,7 @@ public class UserRequestsRESTController {
 	@POST
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public UserResponseMessage login(UserRequestMessage userRequestMessage) {
 		User user = null;
 		try {

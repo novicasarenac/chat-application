@@ -2,8 +2,6 @@ package jms_messages;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 import model.Host;
 
 public class UserRequestMessage implements Serializable {
