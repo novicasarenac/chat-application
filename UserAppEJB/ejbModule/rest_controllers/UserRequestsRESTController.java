@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -65,11 +66,11 @@ public class UserRequestsRESTController {
 	}
 	
 	@GET
-	@Path("/getAllUsers")
+	@Path("/getAllUsers/{sessionId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public UserResponseMessage getAllUsers(UserRequestMessage userRequestMessage) {
+	public UserResponseMessage getAllUsers(@PathParam("sessionId") String sessionId) {
 		List<User> users = userManagement.getAllUsers();
-		return new UserResponseMessage(users, userRequestMessage.getSessionId(), UserResponseStatus.ALL_USERS);
+		return new UserResponseMessage(users, sessionId, UserResponseStatus.ALL_USERS);
 		
 	}
 }

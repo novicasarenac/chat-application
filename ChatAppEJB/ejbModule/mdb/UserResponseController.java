@@ -1,17 +1,13 @@
 package mdb;
 
-import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
-import javax.inject.Inject;
-import javax.jms.Destination;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import beans.UserResponseTransferLocal;
 import jms_messages.UserResponseMessage;
 
 @MessageDriven(activationConfig = {
@@ -20,32 +16,19 @@ import jms_messages.UserResponseMessage;
 })
 public class UserResponseController implements MessageListener {
 	
-	@Inject
-	JMSContext context;
-	
-	@Resource(mappedName = "java:/jms/queue/userResponseTransfer")
-	private Destination destination;
+	@EJB
+	UserResponseTransferLocal userResponseTransfer;
 	
 	@Override
 	public void onMessage(Message message) {
 		ObjectMessage objectMessage = (ObjectMessage) message;
 		try{
 			UserResponseMessage userResponseMessage = (UserResponseMessage) objectMessage.getObject();
-			sendMessageToWebApp(userResponseMessage);
+			userResponseTransfer.sendMessageToWebApp(userResponseMessage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void sendMessageToWebApp(UserResponseMessage userResponseMessage) {
-		try {
-			ObjectMessage message = context.createObjectMessage();
-			message.setObject(userResponseMessage);
-			JMSProducer producer = context.createProducer();
-			producer.send(destination, message);
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
-	}
 
 }

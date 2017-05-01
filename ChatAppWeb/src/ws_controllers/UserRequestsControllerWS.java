@@ -86,8 +86,6 @@ public class UserRequestsControllerWS implements MessageListener{
 			if(s.getId().equals(userResponseMessage.getSessionId()))
 				session = s;
 		}
-		if(session.isOpen())
-			System.out.println("--------------------*********OTVORENA SESIJA");
 		switch(userResponseMessage.getUserResponseStatus()) {
 			case LOGGED_ON: {
 				try {
@@ -129,6 +127,15 @@ public class UserRequestsControllerWS implements MessageListener{
 				try {
 					ObjectMapper mapper = new ObjectMapper();
 					String jsonObject = userResponseMessage.getUserResponseStatus().toString();
+					session.getBasicRemote().sendText(jsonObject);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			case ALL_USERS: {
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonObject = mapper.writeValueAsString(userResponseMessage);
 					session.getBasicRemote().sendText(jsonObject);
 				} catch (Exception e) {
 					e.printStackTrace();

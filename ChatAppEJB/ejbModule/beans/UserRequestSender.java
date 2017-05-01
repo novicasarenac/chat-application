@@ -1,6 +1,7 @@
 package beans;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.Destination;
@@ -22,6 +23,9 @@ import jms_messages.UserResponseMessage;
 
 @Stateless
 public class UserRequestSender implements UserRequestSenderLocal {
+	
+	@EJB
+	UserResponseTransferLocal userResponseTransfer;
 	
 	@Inject
 	JMSContext context;
@@ -47,13 +51,32 @@ public class UserRequestSender implements UserRequestSenderLocal {
 	
 	public void sendViaREST(UserRequestMessage userRequestMessage) {
 		ResteasyClient client = new ResteasyClientBuilder().build();
-		if(userRequestMessage.getType().equals(UserRequestMessageType.LOGIN)) {
-			ResteasyWebTarget target = client.target("http://127.0.0.1:8080/UserAppWeb/rest/user/login");
-			Response response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(userRequestMessage, MediaType.APPLICATION_JSON));
-			UserResponseMessage message = response.readEntity(UserResponseMessage.class);
-			
-			System.out.println(message.toString());
+		Response response = null;
+		switch(userRequestMessage.getType()) {
+			case LOGIN: {
+				ResteasyWebTarget target = client.target("http://localhost:8080/UserAppWeb/rest/user/login");
+				response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(userRequestMessage, MediaType.APPLICATION_JSON));
+				break;
+			}
+			case REGISTER: {
+				ResteasyWebTarget target = client.target("http://localhost:8080/UserAppWeb/rest/user/register");
+				response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(userRequestMessage, MediaType.APPLICATION_JSON));
+				break;
+			}
+			case LOGOUT: {
+				ResteasyWebTarget target = client.target("http://localhost:8080/UserAppWeb/rest/user/logout");
+				response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(userRequestMessage, MediaType.APPLICATION_JSON));
+				break;
+			}
+			case GETALLUSERS: {
+				ResteasyWebTarget target = client.target("http://localhost:8080/UserAppWeb/rest/user/getAllUsers/" + userRequestMessage.getSessionId());
+				response = target.request(MediaType.APPLICATION_JSON).get();
+				break;
+			}
 		}
+		UserResponseMessage message = response.readEntity(UserResponseMessage.class);
+
+		userResponseTransfer.sendMessageToWebApp(message);
 	}
 
 	public UserRequestSender() {
