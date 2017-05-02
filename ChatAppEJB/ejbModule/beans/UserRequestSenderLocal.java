@@ -8,4 +8,6 @@ import jms_messages.UserRequestMessage;
 public interface UserRequestSenderLocal {
 
 	void sendRequest(UserRequestMessage userRequestMessage);
+	public void sendViaJMS(UserRequestMessage userRequestMessage);
+	public void sendViaREST(UserRequestMessage userRequestMessage);
 }

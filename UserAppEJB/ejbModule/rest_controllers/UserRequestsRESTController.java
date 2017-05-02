@@ -66,9 +66,16 @@ public class UserRequestsRESTController {
 	}
 	
 	@GET
+	@Path("/getAllUsers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<User> getAllUsers() {
+		return userManagement.getAllUsers();
+	}
+	
+	@GET
 	@Path("/getAllUsers/{sessionId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public UserResponseMessage getAllUsers(@PathParam("sessionId") String sessionId) {
+	public UserResponseMessage getAllUsersWithSession(@PathParam("sessionId") String sessionId) {
 		List<User> users = userManagement.getAllUsers();
 		return new UserResponseMessage(users, sessionId, UserResponseStatus.ALL_USERS);
 		

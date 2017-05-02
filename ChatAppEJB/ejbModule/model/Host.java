@@ -11,6 +11,12 @@ public class Host implements Serializable {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public Host(String address, String alias) {
+		super();
+		this.address = address;
+		this.alias = alias;
+	}
 
 	public String getAddress() {
 		return address;

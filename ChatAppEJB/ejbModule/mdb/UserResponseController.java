@@ -7,8 +7,10 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import beans.DataManagementLocal;
 import beans.UserResponseTransferLocal;
 import jms_messages.UserResponseMessage;
+import jms_messages.UserResponseStatus;
 
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
@@ -19,12 +21,18 @@ public class UserResponseController implements MessageListener {
 	@EJB
 	UserResponseTransferLocal userResponseTransfer;
 	
+	@EJB
+	DataManagementLocal dataManagement;
+	
 	@Override
 	public void onMessage(Message message) {
 		ObjectMessage objectMessage = (ObjectMessage) message;
 		try{
 			UserResponseMessage userResponseMessage = (UserResponseMessage) objectMessage.getObject();
-			userResponseTransfer.sendMessageToWebApp(userResponseMessage);
+			if(userResponseMessage.getUserResponseStatus().equals(UserResponseStatus.ALL_USERS))
+				dataManagement.setUsers(userResponseMessage.getAllUsers());
+			else
+				userResponseTransfer.sendMessageToWebApp(userResponseMessage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
