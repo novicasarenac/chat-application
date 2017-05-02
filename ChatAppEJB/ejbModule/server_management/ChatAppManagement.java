@@ -43,4 +43,8 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 		System.out.println("----------------------------------------"+local+"***********"+localAlias);
 	}
 	
+	public boolean isMaster() {
+		return master == null;
+	}
+	
 }
