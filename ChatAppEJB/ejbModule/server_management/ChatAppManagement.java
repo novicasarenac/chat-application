@@ -10,6 +10,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -43,8 +44,11 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 	@PostConstruct
 	public void initialize() {
 		master = System.getProperty(SystemPropertiesKeys.MASTER_NODE);
+		
 		if(master == null)
-			System.out.println("-------------------master");
+			System.out.println("This is master node!");
+		else 
+			System.out.println("Master node: "+master);
 		
 		portOffset = System.getProperty(SystemPropertiesKeys.OFFSET);
 		if(portOffset == null) {
@@ -56,15 +60,14 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 			address = InetAddress.getLocalHost();
 			local = address.getHostAddress() + ':' + Integer.toString((SystemPropertiesKeys.MASTER_PORT + Integer.parseInt(portOffset)));
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		localAlias = System.getProperty(SystemPropertiesKeys.ALIAS);
 		if(localAlias == null)
-			localAlias = address.getHostAddress();
+			localAlias = address.getHostName() + portOffset;
 		
-		System.out.println("----------------------------------------"+local+"***********"+localAlias);
+		System.out.println("Local address: "+local+"\tLocal alias: "+localAlias);
 		
 		if(isMaster()) {
 			try {
@@ -81,9 +84,15 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 	//setting host list if node is not master
 	private void sendRegisterRequest(String address, String alias) {
 		ResteasyClient client = new ResteasyClientBuilder().build();
-		ResteasyWebTarget target = client.target("http://"+master+":"+SystemPropertiesKeys.MASTER_PORT+"/ChatAppWeb/rest/host/register/"+alias);
+		String path = "http://"+master+":"+SystemPropertiesKeys.MASTER_PORT+"/ChatAppWeb/rest/host/register/"+alias;
+		System.out.println("PATH: " + path);
+		ResteasyWebTarget target = client.target(path);
 		Response response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(address, MediaType.TEXT_PLAIN));
-		ArrayList<Host> hostList = (ArrayList<Host>) response.readEntity(List.class);
+		ArrayList<Host> hostList = (ArrayList<Host>) response.readEntity(new GenericType<List<Host>>() { });
+		
+		for(Host h : hostList)
+			System.out.println("Address: "+h.getAddress()+"\tAlias: "+h.getAlias());
+		
 		dataManagement.setHosts(hostList);
 		sendGetUsersRESTRequest();
 	}
@@ -93,7 +102,7 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		ResteasyWebTarget target = client.target("http://"+master+":"+SystemPropertiesKeys.MASTER_PORT+"/UserAppWeb/rest/user/getAllUsers");
 		Response response = target.request(MediaType.APPLICATION_JSON).get();
-		ArrayList<User> userList = (ArrayList<User>) response.readEntity(List.class);
+		ArrayList<User> userList = (ArrayList<User>) response.readEntity(new GenericType<List<User>>() { });
 		dataManagement.setUsers(userList);
 	}
 	
