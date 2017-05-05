@@ -15,5 +15,6 @@ public interface DataManagementLocal {
 	public void unregister(Host host);
 	public void setHosts(List<Host> newHosts);
 	public void setUsers(List<User> newUsers);
+	public void sendRegisterToAllNodes(Host newHost, String masterAlias);
 	
 }

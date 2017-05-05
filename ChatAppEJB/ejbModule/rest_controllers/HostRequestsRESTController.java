@@ -18,6 +18,7 @@ import beans.DataManagementLocal;
 import exceptions.AliasExistsException;
 import model.Host;
 import model.User;
+import server_management.ChatAppManagementLocal;
 
 @Stateless
 @Path("/host")
@@ -26,6 +27,9 @@ public class HostRequestsRESTController {
 	@EJB
 	DataManagementLocal dataManagement;
 	
+	@EJB
+	ChatAppManagementLocal chatAppManagement;
+	
 	@POST
 	@Path("/register/{alias}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -33,7 +37,14 @@ public class HostRequestsRESTController {
 	public List<Host> register(@PathParam("alias") String alias, String address) {
 		List<Host> returnValue = new ArrayList<>();
 		try{
-			returnValue = dataManagement.register(new Host(address, alias));
+			Host newHost = new Host(address, alias);
+			returnValue = dataManagement.register(newHost);
+			
+			//if node is master, send register request to all other nodes
+			if(chatAppManagement.isMaster())
+				dataManagement.sendRegisterToAllNodes(newHost, chatAppManagement.getLocalAlias());
+			
+			System.out.println("Host " + alias + " successfully registered");
 		} catch(AliasExistsException e) {
 			return null;
 		}

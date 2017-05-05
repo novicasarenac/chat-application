@@ -57,9 +57,9 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 		
 		InetAddress address = null;
 		try {
-			address = InetAddress.getLocalHost();
+			address = InetAddress.getLoopbackAddress();		//for ip address getLocalHost()
 			local = address.getHostAddress() + ':' + Integer.toString((SystemPropertiesKeys.MASTER_PORT + Integer.parseInt(portOffset)));
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -82,7 +82,8 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 	}
 	
 	//setting host list if node is not master
-	private void sendRegisterRequest(String address, String alias) {
+	@Override
+	public void sendRegisterRequest(String address, String alias) {
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		String path = "http://"+master+":"+SystemPropertiesKeys.MASTER_PORT+"/ChatAppWeb/rest/host/register/"+alias;
 		System.out.println("PATH: " + path);
@@ -98,7 +99,8 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 	}
 	
 	//setting user list if node is not master
-	private void sendGetUsersRESTRequest() {
+	@Override
+	public void sendGetUsersRESTRequest() {
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		ResteasyWebTarget target = client.target("http://"+master+":"+SystemPropertiesKeys.MASTER_PORT+"/UserAppWeb/rest/user/getAllUsers");
 		Response response = target.request(MediaType.APPLICATION_JSON).get();
@@ -107,14 +109,21 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 	}
 	
 	//sending request if node is master
-	private void sendGetUsersJMSRequest() {
+	@Override
+	public void sendGetUsersJMSRequest() {
 		UserRequestMessage userRequestMessage = new UserRequestMessage();
 		userRequestMessage.setType(UserRequestMessageType.GETALLUSERS);
 		userRequestSender.sendViaJMS(userRequestMessage);
 	}
 
+	@Override
 	public boolean isMaster() {
 		return master == null;
 	}
-	
+
+	@Override
+	public String getLocalAlias() {
+		return localAlias;
+	}
+
 }
