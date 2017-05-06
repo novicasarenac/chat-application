@@ -18,4 +18,20 @@ public class UserNotification implements Serializable {
 		this.type = type;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public UserNotificationType getType() {
+		return type;
+	}
+
+	public void setType(UserNotificationType type) {
+		this.type = type;
+	}
+	
 }

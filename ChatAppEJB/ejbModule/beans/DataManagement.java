@@ -74,4 +74,13 @@ public class DataManagement implements DataManagementLocal {
 			}
 		}
 	}
+
+	@Override
+	public List<Host> getHosts() {
+		List<Host> returnValue = new ArrayList<>();
+		for(Host host : hosts.values())
+			returnValue.add(host);
+		
+		return returnValue;
+	}
 }

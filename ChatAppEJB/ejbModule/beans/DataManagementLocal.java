@@ -14,6 +14,7 @@ public interface DataManagementLocal {
 	public List<Host> register(Host newHost) throws AliasExistsException;
 	public void unregister(Host host);
 	public void setHosts(List<Host> newHosts);
+	public List<Host> getHosts();
 	public void setUsers(List<User> newUsers);
 	public void sendRegisterToAllNodes(Host newHost, String masterAlias);
 	
