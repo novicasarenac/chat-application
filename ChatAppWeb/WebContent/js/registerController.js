@@ -1,6 +1,7 @@
 angular.module('chatApplication.RegisterController', [])
        .controller('RegisterController', function($scope, $rootScope, $location) {
-    	   var host = "ws://localhost:8080/ChatAppWeb/userRequest";
+    	   var url = window.location;
+    	   var host = "ws://" + url.hostname + ":" + url.port + "/ChatAppWeb/userRequest";
 		   try {
 			   socket = new WebSocket(host);
 			   

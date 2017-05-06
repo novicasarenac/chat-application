@@ -9,8 +9,8 @@ import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.ObjectMessage;
 
+import jms_messages.UserNotification;
 import jms_messages.UserResponseMessage;
-import model.User;
 
 @Stateless
 public class ResponseSender implements ResponseSenderLocal {
@@ -20,6 +20,9 @@ public class ResponseSender implements ResponseSenderLocal {
 
 	@Resource(mappedName = "java:/jms/queue/userResponse")
 	private Destination destination;
+	
+	@Resource(mappedName = "java:/jms/queue/userNotification")
+	private Destination userDestination;
 	
 	@Override
 	public void sendResponse(UserResponseMessage userResponseMessage) {
@@ -35,6 +38,18 @@ public class ResponseSender implements ResponseSenderLocal {
 
 	public ResponseSender() {
 		super();
+	}
+
+	@Override
+	public void sendUserNotification(UserNotification notification) {
+		try {
+			ObjectMessage message = context.createObjectMessage();
+			message.setObject(notification);
+			JMSProducer producer = context.createProducer();
+			producer.send(userDestination, message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

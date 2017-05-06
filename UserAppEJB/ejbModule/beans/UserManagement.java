@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import exceptions.AlreadyLoggedOn;
 import exceptions.InvalidCredentialsException;
 import exceptions.UsernameExistsException;
+import jms_messages.UserNotification;
+import jms_messages.UserNotificationType;
 import model.Host;
 import model.User;
 
@@ -21,6 +24,9 @@ public class UserManagement implements UserManagementLocal {
 
 	private Map<String, User> usersOffline;
 	private Map<String, User> usersOnline;
+	
+	@EJB
+	ResponseSenderLocal responseSender;
 	
 	@PostConstruct
 	public void initialize() {
@@ -55,6 +61,7 @@ public class UserManagement implements UserManagementLocal {
 			loggedUser.setHost(host);
 			usersOnline.put(loggedUser.getUsername(), loggedUser);
 			usersOffline.remove(username);
+			responseSender.sendUserNotification(new UserNotification(loggedUser, UserNotificationType.LOGIN));
 		} else if(usersOnline.containsKey(username)) {
 			throw new AlreadyLoggedOn("User is already logged on");
 		} else throw new InvalidCredentialsException("Invalid credentials");
@@ -67,6 +74,7 @@ public class UserManagement implements UserManagementLocal {
 		usersOnline.remove(logout.getUsername());
 		logout.setHost(null);
 		usersOffline.put(logout.getUsername(), logout);
+		responseSender.sendUserNotification(new UserNotification(logout, UserNotificationType.LOGOUT));
 		return logout;
 	}
 

@@ -2,6 +2,7 @@ package beans;
 
 import javax.ejb.Local;
 
+import jms_messages.UserNotification;
 import jms_messages.UserResponseMessage;
 import model.User;
 
@@ -9,4 +10,5 @@ import model.User;
 public interface ResponseSenderLocal {
 	
 	void sendResponse(UserResponseMessage userResponseMessage);
+	void sendUserNotification(UserNotification notification);
 }

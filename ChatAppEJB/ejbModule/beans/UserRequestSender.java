@@ -20,12 +20,16 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import jms_messages.UserRequestMessage;
 import jms_messages.UserRequestMessageType;
 import jms_messages.UserResponseMessage;
+import server_management.ChatAppManagementLocal;
 
 @Stateless
 public class UserRequestSender implements UserRequestSenderLocal {
 	
 	@EJB
 	UserResponseTransferLocal userResponseTransfer;
+	
+	@EJB
+	ChatAppManagementLocal chatAppManagement;
 	
 	@Inject
 	JMSContext context;
@@ -35,11 +39,15 @@ public class UserRequestSender implements UserRequestSenderLocal {
 	
 	@Override
 	public void sendRequest(UserRequestMessage userRequestMessage) {
-		sendViaREST(userRequestMessage);
+		if(chatAppManagement.isMaster())
+			sendViaJMS(userRequestMessage);
+		else
+			sendViaREST(userRequestMessage);
 	}
 	
 	public void sendViaJMS(UserRequestMessage userRequestMessage) {
 		try {
+			System.out.println(userRequestMessage.getType() + " message sent via JMS");
 			ObjectMessage message = context.createObjectMessage();
 			message.setObject(userRequestMessage);
 			JMSProducer producer = context.createProducer();
@@ -50,6 +58,7 @@ public class UserRequestSender implements UserRequestSenderLocal {
 	}
 	
 	public void sendViaREST(UserRequestMessage userRequestMessage) {
+		System.out.println(userRequestMessage.getType() + " message sent via REST");
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		Response response = null;
 		switch(userRequestMessage.getType()) {
