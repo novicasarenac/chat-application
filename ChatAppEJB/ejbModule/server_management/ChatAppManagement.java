@@ -126,4 +126,8 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 		return localAlias;
 	}
 
+	@Override
+	public String getLocal() {
+		return local;
+	}
 }

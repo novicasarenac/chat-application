@@ -10,5 +10,6 @@ public interface ChatAppManagementLocal {
 	public void sendGetUsersJMSRequest();
 	public boolean isMaster();
 	public String getLocalAlias();
+	public String getLocal();
 	
 }

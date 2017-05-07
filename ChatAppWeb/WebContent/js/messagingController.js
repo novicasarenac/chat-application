@@ -1,5 +1,6 @@
 angular.module('chatApplication.MessagingController', [])
 	   .controller('MessagingController', function($scope, $rootScope, $location) {
+		   console.log(sessionStorage.loggedUser);
 		   var url = window.location;
 		   var host = "ws://" + url.hostname + ":" + url.port + "/ChatAppWeb/getAllOnlineUsers";
 		   try {

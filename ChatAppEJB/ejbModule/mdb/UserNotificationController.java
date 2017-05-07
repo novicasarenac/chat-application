@@ -53,6 +53,7 @@ public class UserNotificationController implements MessageListener {
 					Response response = target.request().post(Entity.entity(notification.getUser(), MediaType.APPLICATION_JSON));
 				}
 			}
+			break;
 		}
 		case LOGOUT:
 			for(Host host : dataManagement.getHosts()) {

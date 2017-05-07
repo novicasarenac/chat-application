@@ -23,6 +23,8 @@ import beans.UserRequestSenderLocal;
 import jms_messages.UserRequestMessage;
 import jms_messages.UserRequestMessageType;
 import jms_messages.UserResponseMessage;
+import model.Host;
+import server_management.ChatAppManagementLocal;
 import utils.WSMessage;
 
 @ServerEndpoint("/userRequest")
@@ -36,6 +38,9 @@ public class UserRequestsControllerWS implements MessageListener{
 	
 	@EJB
 	UserRequestSenderLocal userRequestSender;
+	
+	@EJB
+	ChatAppManagementLocal chatAppManagement;
 	
 	@OnOpen
 	public void onOpen(Session session) {
@@ -69,6 +74,7 @@ public class UserRequestsControllerWS implements MessageListener{
 			userRequestMessage.setType(UserRequestMessageType.LOGIN);
 			userRequestMessage.setUsername(wsmessage.getUsername());
 			userRequestMessage.setPassword(wsmessage.getPassword());
+			userRequestMessage.setHost(new Host(chatAppManagement.getLocal(), chatAppManagement.getLocalAlias()));
 		} else if(wsmessage.getType() == UserRequestMessageType.LOGOUT) {
 			userRequestMessage.setType(UserRequestMessageType.LOGOUT);
 			userRequestMessage.setUsername(wsmessage.getUsername());
@@ -95,6 +101,7 @@ public class UserRequestsControllerWS implements MessageListener{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				break;
 			}
 			case INVALID_CREDENTIALS: {
 				try {
@@ -104,6 +111,7 @@ public class UserRequestsControllerWS implements MessageListener{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				break;
 			}
 			case ALREADY_LOGGED: {
 				try {
@@ -113,6 +121,7 @@ public class UserRequestsControllerWS implements MessageListener{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				break;
 			}
 			case REGISTERED: {
 				try {
@@ -122,6 +131,7 @@ public class UserRequestsControllerWS implements MessageListener{
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				break;
 			}
 			case USERNAME_EXISTS: {
 				try {
@@ -131,6 +141,7 @@ public class UserRequestsControllerWS implements MessageListener{
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				break;
 			}
 			case ALL_USERS: {
 				try {
@@ -140,6 +151,7 @@ public class UserRequestsControllerWS implements MessageListener{
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				break;
 			}
 		}
 	}
