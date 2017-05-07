@@ -17,6 +17,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import beans.DataManagementLocal;
 import jms_messages.UserNotification;
 import model.Host;
+import server_management.ChatAppManagementLocal;
 
 @MessageDriven(activationConfig = { 
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
@@ -27,11 +28,15 @@ public class UserNotificationController implements MessageListener {
 	@EJB
 	DataManagementLocal dataManagement;
 	
+	@EJB
+	ChatAppManagementLocal chatAppManagement;
+	
 	@Override
 	public void onMessage(Message message) {
 		ObjectMessage objectMessage = (ObjectMessage)message;
 		try {
 			UserNotification notification = (UserNotification) objectMessage.getObject();
+			dataManagement.addUserOnline(notification.getUser());
 			sendNotification(notification);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -42,16 +47,20 @@ public class UserNotificationController implements MessageListener {
 		switch (notification.getType()) {
 		case LOGIN: {
 			for(Host host : dataManagement.getHosts()) {
-				ResteasyClient client = new ResteasyClientBuilder().build();
-				ResteasyWebTarget target = client.target("http://" + host.getAddress() + "/ChatAppWeb/rest/notification/addUser");
-				Response response = target.request(MediaType.TEXT_PLAIN).post(Entity.entity(notification.getUser(), MediaType.APPLICATION_JSON));
+				if(!host.getAlias().equals(chatAppManagement.getLocalAlias())) {
+					ResteasyClient client = new ResteasyClientBuilder().build();
+					ResteasyWebTarget target = client.target("http://" + host.getAddress() + "/ChatAppWeb/rest/notification/addUser");
+					Response response = target.request().post(Entity.entity(notification.getUser(), MediaType.APPLICATION_JSON));
+				}
 			}
 		}
 		case LOGOUT:
 			for(Host host : dataManagement.getHosts()) {
-				ResteasyClient client = new ResteasyClientBuilder().build();
-				ResteasyWebTarget target = client.target("http://" + host.getAddress() + "/ChatAppWeb/rest/notification/removeUser");
-				Response response = target.request(MediaType.TEXT_PLAIN).post(Entity.entity(notification.getUser(), MediaType.APPLICATION_JSON));
+				if(!host.getAlias().equals(chatAppManagement.getLocalAlias())) {
+					ResteasyClient client = new ResteasyClientBuilder().build();
+					ResteasyWebTarget target = client.target("http://" + host.getAddress() + "/ChatAppWeb/rest/notification/removeUser");
+					Response response = target.request().put(Entity.entity(notification.getUser(), MediaType.APPLICATION_JSON));
+				}
 			}
 			break;
 		}

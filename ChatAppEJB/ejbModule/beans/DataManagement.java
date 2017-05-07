@@ -29,6 +29,7 @@ public class DataManagement implements DataManagementLocal {
 
 	private Map<String, Host> hosts = new HashMap<>();
 	private List<User> users = new ArrayList<>();
+	private List<User> usersOnline = new ArrayList<>();
 	
 	@Override
 	@Lock(LockType.WRITE)
@@ -82,5 +83,16 @@ public class DataManagement implements DataManagementLocal {
 			returnValue.add(host);
 		
 		return returnValue;
+	}
+
+	@Override
+	public void addUserOnline(User user) {
+		usersOnline.add(user);
+		System.out.println("User " + user.getUsername() + " is online");
+	}
+
+	@Override
+	public void removeUserOnline(User user) {
+		usersOnline.remove(user);
 	}
 }
