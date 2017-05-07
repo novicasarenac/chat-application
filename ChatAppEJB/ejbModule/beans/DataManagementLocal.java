@@ -18,6 +18,7 @@ public interface DataManagementLocal {
 	public void setUsers(List<User> newUsers);
 	public void sendRegisterToAllNodes(Host newHost, String masterAlias);
 	public void addUserOnline(User user);
+	public List<User> getUsersOnline();
 	public void removeUserOnline(User user);
 	
 }

@@ -60,6 +60,11 @@ public class DataManagement implements DataManagementLocal {
 	@Override
 	public void setUsers(List<User> newUsers) {
 		users = newUsers;
+		
+		for(User user : users) {
+			if(user.getHost() != null)
+				usersOnline.add(user);
+		}
 	}
 	
 	//if master send register to all nodes in cluster
@@ -94,5 +99,10 @@ public class DataManagement implements DataManagementLocal {
 	@Override
 	public void removeUserOnline(User user) {
 		usersOnline.remove(user);
+	}
+
+	@Override
+	public List<User> getUsersOnline() {
+		return usersOnline;
 	}
 }
