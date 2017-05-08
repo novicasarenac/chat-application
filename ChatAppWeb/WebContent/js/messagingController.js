@@ -1,6 +1,7 @@
 angular.module('chatApplication.MessagingController', [])
 	   .controller('MessagingController', function($scope, $rootScope, $location) {
 		   console.log(sessionStorage.loggedUser);
+		   $scope.onlineUsers = [];
 		   var url = window.location;
 		   var host = "ws://" + url.hostname + ":" + url.port + "/ChatAppWeb/getAllOnlineUsers";
 		   try {
@@ -11,7 +12,10 @@ angular.module('chatApplication.MessagingController', [])
 			   }
 			   
 			   socketUsers.onmessage = function(message) {
-				   $scope.onlineUsers = message;
+				   var payload = JSON.parse(message.data);
+				   $scope.$apply(function() {
+					   $scope.onlineUsers = payload;
+				   })
 			   }
 			   
 			   socketUsers.onclose = function() {

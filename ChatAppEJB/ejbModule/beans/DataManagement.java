@@ -10,7 +10,6 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -21,8 +20,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import exceptions.AliasExistsException;
 import model.Host;
 import model.User;
-import server_management.ChatAppManagementLocal;
-import server_management.SystemPropertiesKeys;
 
 @Singleton
 public class DataManagement implements DataManagementLocal {
@@ -30,6 +27,9 @@ public class DataManagement implements DataManagementLocal {
 	private Map<String, Host> hosts = new HashMap<>();
 	private List<User> users = new ArrayList<>();
 	private List<User> usersOnline = new ArrayList<>();
+	
+	@EJB
+	UserResponseTransferLocal userResponseTransfer;
 	
 	@Override
 	@Lock(LockType.WRITE)
@@ -93,6 +93,8 @@ public class DataManagement implements DataManagementLocal {
 	@Override
 	public void addUserOnline(User user) {
 		usersOnline.add(user);
+		//send notification to web app
+		userResponseTransfer.sendNotificationMessageToWebApp(usersOnline);
 		System.out.println("User " + user.getUsername() + " is online");
 	}
 

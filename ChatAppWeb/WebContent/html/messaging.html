@@ -2,9 +2,6 @@
 
 
 	<div class="row " style="padding-top: 40px;">
-		<h3 class="text-center">BOOTSTRAP CHAT EXAMPLE</h3>
-		<br />
-		<br />
 		<div class="col-md-8">
 			<div class="panel panel-info">
 				<div class="panel-heading">RECENT CHAT HISTORY</div>
@@ -109,7 +106,7 @@
 				<div class="panel-body">
 					<ul class="media-list">
 
-						<li class="media">
+						<li class="media"  ng-repeat="onlineUser in onlineUsers">
 
 							<div class="media-body">
 
@@ -119,134 +116,8 @@
 										src="assets/img/user.png" />
 									</a>
 									<div class="media-body">
-										<a>Alex Deo | User </a> <small class="text-muted">Active
+										<a>{{onlineUser.username}}</a> <small class="text-muted">Active
 											From 3 hours</small>
-									</div>
-								</div>
-
-							</div>
-						</li>
-						<li class="media">
-
-							<div class="media-body">
-
-								<div class="media">
-									<a class="pull-left" href="#"> <img
-										class="media-object img-circle" style="max-height: 40px;"
-										src="assets/img/user.gif" />
-									</a>
-									<div class="media-body">
-										<h5>Jhon Rexa | User</h5>
-
-										<small class="text-muted">Active From 3 hours</small>
-									</div>
-								</div>
-
-							</div>
-						</li>
-						<li class="media">
-
-							<div class="media-body">
-
-								<div class="media">
-									<a class="pull-left" href="#"> <img
-										class="media-object img-circle" style="max-height: 40px;"
-										src="assets/img/user.png" />
-									</a>
-									<div class="media-body">
-										<h5>Alex Deo | User</h5>
-
-										<small class="text-muted">Active From 3 hours</small>
-									</div>
-								</div>
-
-							</div>
-						</li>
-						<li class="media">
-
-							<div class="media-body">
-
-								<div class="media">
-									<a class="pull-left" href="#"> <img
-										class="media-object img-circle" style="max-height: 40px;"
-										src="assets/img/user.gif" />
-									</a>
-									<div class="media-body">
-										<h5>Jhon Rexa | User</h5>
-
-										<small class="text-muted">Active From 3 hours</small>
-									</div>
-								</div>
-
-							</div>
-						</li>
-						<li class="media">
-
-							<div class="media-body">
-
-								<div class="media">
-									<a class="pull-left" href="#"> <img
-										class="media-object img-circle" style="max-height: 40px;"
-										src="assets/img/user.png" />
-									</a>
-									<div class="media-body">
-										<h5>Alex Deo | User</h5>
-
-										<small class="text-muted">Active From 3 hours</small>
-									</div>
-								</div>
-
-							</div>
-						</li>
-						<li class="media">
-
-							<div class="media-body">
-
-								<div class="media">
-									<a class="pull-left" href="#"> <img
-										class="media-object img-circle" style="max-height: 40px;"
-										src="assets/img/user.gif" />
-									</a>
-									<div class="media-body">
-										<h5>Jhon Rexa | User</h5>
-
-										<small class="text-muted">Active From 3 hours</small>
-									</div>
-								</div>
-
-							</div>
-						</li>
-						<li class="media">
-
-							<div class="media-body">
-
-								<div class="media">
-									<a class="pull-left" href="#"> <img
-										class="media-object img-circle" style="max-height: 40px;"
-										src="assets/img/user.png" />
-									</a>
-									<div class="media-body">
-										<h5>Alex Deo | User</h5>
-
-										<small class="text-muted">Active From 3 hours</small>
-									</div>
-								</div>
-
-							</div>
-						</li>
-						<li class="media">
-
-							<div class="media-body">
-
-								<div class="media">
-									<a class="pull-left" href="#"> <img
-										class="media-object img-circle" style="max-height: 40px;"
-										src="assets/img/user.gif" />
-									</a>
-									<div class="media-body">
-										<h5>Jhon Rexa | User</h5>
-
-										<small class="text-muted">Active From 3 hours</small>
 									</div>
 								</div>
 
