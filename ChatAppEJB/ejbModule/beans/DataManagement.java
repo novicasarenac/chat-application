@@ -100,8 +100,14 @@ public class DataManagement implements DataManagementLocal {
 
 	@Override
 	public void removeUserOnline(User user) {
-		usersOnline.remove(user);
-		
+		int index = -1;
+		for(User u : usersOnline) {
+			if(user.getUsername().equals(u.getUsername()))
+				index = usersOnline.indexOf(u);
+		}
+		usersOnline.remove(index);
+		//send notification to web app
+		userResponseTransfer.sendNotificationMessageToWebApp(usersOnline);
 		System.out.println("User " + user.getUsername() + " is offline now");
 	}
 
