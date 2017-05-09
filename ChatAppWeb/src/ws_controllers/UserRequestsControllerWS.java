@@ -153,6 +153,16 @@ public class UserRequestsControllerWS implements MessageListener{
 				}
 				break;
 			}
+			case LOGGED_OFF: {
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonObject = mapper.writeValueAsString(userResponseMessage);
+					session.getBasicRemote().sendText(jsonObject);
+				} catch (Exception e) {
+					e.printStackTrace();
+				} 
+				break;
+			}
 		}
 	}
 	
