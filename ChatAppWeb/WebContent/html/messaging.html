@@ -7,11 +7,13 @@
 	<div class="row " style="padding-top: 2%;">
 		<div class="col-md-8">
 			<div class="panel panel-info">
-				<div class="panel-heading">RECENT CHAT HISTORY</div>
+				<div class="panel-heading" ng-if="currentChatUser != null">{{currentChatUser.username}}</div>
+				<div class="panel-heading" ng-if="currentChatUser == null">Public Chat Room</div>
+				
 				<div class="panel-body">
 					<ul class="media-list">
 
-						<li class="media">
+						<li class="media" ng-repeat="message in currentMessages">
 
 							<div class="media-body">
 
@@ -20,11 +22,8 @@
 										class="media-object img-circle " src="assets/img/user.png" />
 									</a>
 									<div class="media-body">
-										Donec sit amet ligula enim. condimentum massa. Donec
-										sit amet ligula enim. Duis vel condimentum massa.Donec sit
-										amet ligula enim. Duis vel condimentum massa. Donec sit amet
-										ligula enim. Duis vel condimentum massa. <br /> <small
-											class="text-muted">Alex Deo | 23rd June at 5:00pm</small>
+										{{message.content}} <br /> <small
+											class="text-muted">{{message.from.username}} | {{message.date}}</small>
 										<hr />
 									</div>
 								</div>
@@ -36,8 +35,8 @@
 				<div class="panel-footer">
 					<div class="input-group">
 						<input type="text" class="form-control"
-							placeholder="Enter Message" /> <span class="input-group-btn">
-							<button class="btn btn-info" type="button">SEND</button>
+							placeholder="Enter Message" ng-model="messageContent" /> <span class="input-group-btn">
+							<button class="btn btn-info" type="button" ng-click="sendMessage(messageContent)">SEND</button>
 						</span>
 					</div>
 				</div>
@@ -59,7 +58,7 @@
 										src="assets/img/user.png" />
 									</a>
 									<div class="media-body">
-										<a>{{onlineUser.username}}</a> <small class="text-muted">Active
+										<a href ng-click="switchUser(onlineUser)" role="button">{{onlineUser.username}}</a> <small class="text-muted">Active
 											From 3 hours</small>
 									</div>
 								</div>

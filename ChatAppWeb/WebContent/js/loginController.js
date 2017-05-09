@@ -16,7 +16,7 @@ angular.module('chatApplication.LoginController', [])
 					   alert('You are already logged on');
 				   } else {
 					   var payload = JSON.parse(message.data);
-					   sessionStorage.setItem('loggedUser', payload.user.username);
+					   sessionStorage.setItem('loggedUser', JSON.stringify(payload.user));
 					   $rootScope.$apply(function() {
 						   $location.path('/messaging');
 					   });

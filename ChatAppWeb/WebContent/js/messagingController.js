@@ -1,6 +1,5 @@
 angular.module('chatApplication.MessagingController', [])
 	   .controller('MessagingController', function($scope, $rootScope, $location) {
-		   console.log(sessionStorage.loggedUser);
 		   $scope.onlineUsers = [];
 		   var url = window.location;
 		   var host = "ws://" + url.hostname + ":" + url.port + "/ChatAppWeb/getAllOnlineUsers";
@@ -53,9 +52,10 @@ angular.module('chatApplication.MessagingController', [])
 		   }
 		   
 		   function send() {
+			   var logged = JSON.parse(sessionStorage.loggedUser)
 			   try {
 				   message = {
-						   'username' : sessionStorage.loggedUser,
+						   'username' : logged.username,
 						   'password' : null,
 						   'type' : 'LOGOUT'
 				   };
@@ -69,5 +69,72 @@ angular.module('chatApplication.MessagingController', [])
 		   
 		   $scope.logout = function() {
 			   send();
+		   }
+		   
+		   //messaging
+		   var currentLoggedUser = JSON.parse(sessionStorage.loggedUser);
+		   var messagingSocketUrl = "ws://" + url.hostname + ":" + url.port + "/ChatAppWeb/publishMessage/" + currentLoggedUser.username;
+		   
+		   try {
+			   messagingSocket = new WebSocket(messagingSocketUrl);
+			   
+			   messagingSocket.onopen = function() {
+				   
+			   }
+			   
+			   messagingSocket.onmessage = function(message) {
+				   
+			   }
+			   
+			   messagingSocket.onclose = function() {
+				   socket = null;
+				   console.log("socket connection closed");
+			   }
+		   } catch(exception) {
+			   console.log("Error!");
+		   }
+		   
+		   $scope.currentChatUser = null;
+		   
+		   $scope.currentMessages = [];
+		   
+		   $scope.privateMessages = [];
+		   
+		   $scope.publicMessages = [];
+		   
+		   var setCurrentMessages = function(user) {
+			   $scope.currentMessages = $scope.privateMessages.filter(message => message.to == user);
+		   }
+		   
+		   $scope.showPublicMessages = function() {
+			   $scope.$apply(function() {
+				   $scope.currentMessages = $scope.publicMessages;
+			   })
+		   }
+		   
+		   $scope.switchUser = function(user) {
+			   $scope.currentChatUser = user;
+			   setCurrentMessages(user);
+		   }
+
+		   $scope.sendMessage = function(content) {
+			   var messageForSending = {
+					   'from' : JSON.parse(sessionStorage.loggedUser),
+					   'to' : $scope.currentChatUser,
+					   'date' : new Date(),
+					   'subject' : null,
+					   'content' : content
+			   };
+			   
+			   if(messageForSending.to == null) {
+				   $scope.publicMessages.push(messageForSending);
+			   } else {
+				   $scope.privateMessages.push(messageForSending);
+			   }
+			   $scope.currentMessages.push(messageForSending);
+			   
+			   /*try {
+				   
+			   }*/
 		   }
 	   });
