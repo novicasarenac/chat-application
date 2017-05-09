@@ -82,8 +82,25 @@ angular.module('chatApplication.MessagingController', [])
 				   
 			   }
 			   
-			   messagingSocket.onmessage = function(message) {
-				   
+			   messagingSocket.onmessage = function(messageString) {
+				   var message = JSON.parse(messageString.data);
+				   if(message.to == null) {
+					   $scope.publicMessages.push(message);
+					   if($scope.currentChatUser == null) {
+						   $scope.$apply(function() {
+							   $scope.currentMessages.push(message);
+						   })
+					   }
+				   }else {
+					   $scope.privateMessages.push(message);
+					   if($scope.currentChatUser != null) {
+						   if($scope.currentChatUser.username == message.from.username) {
+							   $scope.$apply(function() {
+								   $scope.currentMessages.push(message);
+							   })
+						   }
+					   }
+				   }
 			   }
 			   
 			   messagingSocket.onclose = function() {
@@ -133,8 +150,11 @@ angular.module('chatApplication.MessagingController', [])
 			   }
 			   $scope.currentMessages.push(messageForSending);
 			   
-			   /*try {
-				   
-			   }*/
+			   try {
+				   var messageJSON = angular.toJson(messageForSending);
+				   messagingSocket.send(messageJSON);
+			   } catch(exception) {
+				   console.log("Error!");
+			   }
 		   }
 	   });

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -15,15 +17,23 @@ import javax.websocket.server.ServerEndpoint;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import model.Message;
+import server_management.ChatAppManagementLocal;
 
 @ServerEndpoint("/publishMessage/{username}")
+@Stateless
 public class MessagingControllerWS {
 
 	Map<String, Session> userSessions = new HashMap<String, Session>();
 	
+	@EJB
+	ChatAppManagementLocal chatAppManagement;
+	
 	@OnOpen
 	public void onOpen(Session session, @PathParam("username") String username) {
 		if(!userSessions.containsKey(username)) {
+			userSessions.put(username, session);
+		} else {
+			userSessions.remove(username);
 			userSessions.put(username, session);
 		}
 	}
@@ -35,7 +45,7 @@ public class MessagingControllerWS {
 			try {
 				ObjectMapper mapper = new ObjectMapper();
 				message = mapper.readValue(messageString, Message.class);
-				System.out.println("Stigla poruka:" + message.toString());
+				processMessage(message);
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
@@ -51,5 +61,23 @@ public class MessagingControllerWS {
 	@OnClose
 	public void onClose(Session session, @PathParam("username") String username) {
 		userSessions.remove(username);
+	}
+	
+	public void processMessage(Message message) {
+		
+		if(message.getTo().getHost().getAlias().equals(chatAppManagement.getLocalAlias())) 
+			sendToLocalUser(message);
+	}
+	
+	//if receiver is on the same node as sender
+	public void sendToLocalUser(Message message) {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonObject = mapper.writeValueAsString(message);
+			Session session = userSessions.get(message.getTo().getUsername());
+			session.getBasicRemote().sendText(jsonObject);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
