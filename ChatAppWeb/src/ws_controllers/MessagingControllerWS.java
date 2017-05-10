@@ -135,7 +135,6 @@ public class MessagingControllerWS implements MessageListener{
 
 	@Override
 	public void onMessage(javax.jms.Message arg0) {
-		System.out.println("STIGLAAAAAAAAAA");
 		ObjectMessage objectMessage = (ObjectMessage) arg0;
 		try {
 			Message message = (Message)objectMessage.getObject();

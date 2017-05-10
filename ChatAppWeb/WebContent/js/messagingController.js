@@ -12,8 +12,10 @@ angular.module('chatApplication.MessagingController', [])
 			   
 			   socketUsers.onmessage = function(message) {
 				   var payload = JSON.parse(message.data);
+				   var currentlyLogged = JSON.parse(sessionStorage.loggedUser);
+				   var temp = payload.filter(user => user.username != currentlyLogged.username);
 				   $scope.$apply(function() {
-					   $scope.onlineUsers = payload;
+					   $scope.onlineUsers = temp;
 				   })
 			   }
 			   
