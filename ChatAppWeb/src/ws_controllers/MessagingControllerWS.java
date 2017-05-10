@@ -84,6 +84,18 @@ public class MessagingControllerWS {
 	
 	//sending public message
 	public void sendPublicMessage(Message message) {
-		System.out.println("Salji public poruku");
+		//messages for local users
+		for(String username : userSessions.keySet()) {
+			if(!username.equals(message.getFrom().getUsername())) {
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonObject = mapper.writeValueAsString(message);
+					Session session = userSessions.get(username);
+					session.getBasicRemote().sendText(jsonObject);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
