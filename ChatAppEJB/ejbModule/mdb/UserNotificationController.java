@@ -56,8 +56,8 @@ public class UserNotificationController implements MessageListener {
 			break;
 		}
 		case LOGOUT:
+			dataManagement.removeUserOnline(notification.getUser());
 			for(Host host : dataManagement.getHosts()) {
-				dataManagement.removeUserOnline(notification.getUser());
 				if(!host.getAlias().equals(chatAppManagement.getLocalAlias())) {
 					ResteasyClient client = new ResteasyClientBuilder().build();
 					ResteasyWebTarget target = client.target("http://" + host.getAddress() + "/ChatAppWeb/rest/notification/removeUser");
