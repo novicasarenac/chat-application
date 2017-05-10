@@ -64,8 +64,9 @@ public class MessagingControllerWS {
 	}
 	
 	public void processMessage(Message message) {
-		
-		if(message.getTo().getHost().getAlias().equals(chatAppManagement.getLocalAlias())) 
+		if(message.getTo() == null)
+			sendPublicMessage(message);
+		else if(message.getTo().getHost().getAlias().equals(chatAppManagement.getLocalAlias())) 
 			sendToLocalUser(message);
 	}
 	
@@ -79,5 +80,10 @@ public class MessagingControllerWS {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	//sending public message
+	public void sendPublicMessage(Message message) {
+		System.out.println("Salji public poruku");
 	}
 }

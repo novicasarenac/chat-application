@@ -120,13 +120,13 @@ angular.module('chatApplication.MessagingController', [])
 		   $scope.publicMessages = [];
 		   
 		   var setCurrentMessages = function(user) {
-			   $scope.currentMessages = $scope.privateMessages.filter(message => message.to == user);
+			   var loggedUser = JSON.parse(sessionStorage.loggedUser);
+			   $scope.currentMessages = $scope.privateMessages.filter(message => (message.to == user || message.to.username == loggedUser.username));
 		   }
 		   
 		   $scope.showPublicMessages = function() {
-			   $scope.$apply(function() {
-				   $scope.currentMessages = $scope.publicMessages;
-			   })
+			   $scope.currentChatUser = null;
+			   $scope.currentMessages = $scope.publicMessages.filter(message => message.to == null);
 		   }
 		   
 		   $scope.switchUser = function(user) {

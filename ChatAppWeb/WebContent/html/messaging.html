@@ -13,7 +13,7 @@
 				<div class="panel-body">
 					<ul class="media-list">
 
-						<li class="media" ng-repeat="message in currentMessages">
+						<li class="media" ng-repeat="message in currentMessages track by $index">
 
 							<div class="media-body">
 
@@ -45,7 +45,11 @@
 		<div class="col-md-4">
 			<div class="panel panel-primary">
 				<div class="panel-heading">ONLINE USERS</div>
+				
 				<div class="panel-body">
+					<button class="btn btn-info" type="button" ng-click="showPublicMessages()">ENTER PUBLIC CHAT ROOM</button>
+					<hr/>
+				
 					<ul class="media-list">
 
 						<li class="media"  ng-repeat="onlineUser in onlineUsers">
@@ -53,13 +57,11 @@
 							<div class="media-body">
 
 								<div class="media">
-									<a class="pull-left" href="#"> <img
-										class="media-object img-circle" style="max-height: 40px;"
-										src="assets/img/user.png" />
+									<a class="pull-left" href ng-click="switchUser(onlineUser)"> 
+										<span class="badge" style="background-color: green; height: 15px"> </span>
 									</a>
 									<div class="media-body">
-										<a href ng-click="switchUser(onlineUser)" role="button">{{onlineUser.username}}</a> <small class="text-muted">Active
-											From 3 hours</small>
+										<a href ng-click="switchUser(onlineUser)" role="button">{{onlineUser.username}}</a>
 									</div>
 								</div>
 
