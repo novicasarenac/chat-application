@@ -72,7 +72,6 @@ public class MessagingControllerWS implements MessageListener{
 	@OnError
 	public void onError(Session session, @PathParam("username") String username, Throwable t) {
 		userSessions.remove(username);
-		t.printStackTrace();
 	}
 	
 	@OnClose

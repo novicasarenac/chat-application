@@ -157,7 +157,8 @@ public class UserRequestsControllerWS implements MessageListener{
 				try {
 					ObjectMapper mapper = new ObjectMapper();
 					String jsonObject = mapper.writeValueAsString(userResponseMessage);
-					session.getBasicRemote().sendText(jsonObject);
+					if(session != null)
+						session.getBasicRemote().sendText(jsonObject);
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
@@ -174,7 +175,6 @@ public class UserRequestsControllerWS implements MessageListener{
 	@OnError
 	public void onError(Session session, Throwable t) {
 		sessions.remove(session);
-		t.printStackTrace();
 	}
 
 	//user response message listener

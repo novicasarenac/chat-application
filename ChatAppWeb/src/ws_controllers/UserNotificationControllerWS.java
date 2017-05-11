@@ -77,7 +77,6 @@ public class UserNotificationControllerWS implements MessageListener {
 	@OnError
 	public void onError(Session session, Throwable t) {
 		sessions.remove(session);
-		t.printStackTrace();
 	}
 	
 	//user notification message listener

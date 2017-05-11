@@ -1,6 +1,12 @@
 angular.module('chatApplication.MessagingController', [])
 	   .controller('MessagingController', function($scope, $rootScope, $location) {
 		   $scope.onlineUsers = [];
+		   
+		   //logout on refresh and close tab
+		   window.onbeforeunload = function() {
+			   send();
+		   }
+		   
 		   var url = window.location;
 		   var host = "ws://" + url.hostname + ":" + url.port + "/ChatAppWeb/getAllOnlineUsers";
 		   try {
@@ -24,7 +30,7 @@ angular.module('chatApplication.MessagingController', [])
 				   console.log("Socket user connection closed");
 			   }
 		   } catch(exception) {
-			   console.log("Error!");
+
 		   }
 		   
 		   //logout
@@ -50,7 +56,9 @@ angular.module('chatApplication.MessagingController', [])
 				   socket = null;
 			   }
 		   } catch(exception) {
-			   console.log("Error!");
+			   //logout on refresh or tab close
+			   sessionStorage.removeItem('loggedUser');
+			   $location.path('/login');
 		   }
 		   
 		   function send() {
@@ -110,7 +118,7 @@ angular.module('chatApplication.MessagingController', [])
 				   console.log("socket connection closed");
 			   }
 		   } catch(exception) {
-			   console.log("Error!");
+
 		   }
 		   
 		   $scope.currentChatUser = null;
