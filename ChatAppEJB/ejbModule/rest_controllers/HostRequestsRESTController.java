@@ -52,8 +52,13 @@ public class HostRequestsRESTController {
 		return returnValue;
 	}
 	
-	@DELETE
-	public void unregister(Host host) {
-		dataManagement.unregister(host);
+	@POST
+	@Path("/unregister")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public void unregister(String alias) {
+		dataManagement.unregister(alias);
+		
+		if(chatAppManagement.isMaster())
+			dataManagement.sendUnregisterToAllNodes(alias, chatAppManagement.getLocalAlias());
 	}
 }

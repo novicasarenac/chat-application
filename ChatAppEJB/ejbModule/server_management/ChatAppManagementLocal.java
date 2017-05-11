@@ -2,6 +2,8 @@ package server_management;
 
 import javax.ejb.Local;
 
+import model.Host;
+
 @Local
 public interface ChatAppManagementLocal {
 	

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -81,6 +82,16 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 		}
 	}
 	
+	@PreDestroy
+	public void preDestroy() {
+		if(!isMaster()) {
+			ResteasyClient client = new ResteasyClientBuilder().build();
+			String path = "http://" + master + ":" + SystemPropertiesKeys.MASTER_PORT + "/ChatAppWeb/rest/host/unregister";
+			ResteasyWebTarget target = client.target(path);
+			target.request().post(Entity.entity(localAlias, MediaType.TEXT_PLAIN));
+		}
+	}
+	
 	//setting host list if node is not master
 	@Override
 	public void sendRegisterRequest(String address, String alias) {
@@ -130,4 +141,5 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 	public String getLocal() {
 		return local;
 	}
+
 }

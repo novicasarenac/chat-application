@@ -46,8 +46,9 @@ public class DataManagement implements DataManagementLocal {
 	}
 
 	@Override
-	public void unregister(Host host) {
-		hosts.remove(host.getAlias());
+	public void unregister(String alias) {
+		System.out.println("HOST" + alias + " removed");
+		hosts.remove(alias);
 	}
 	
 	@Override
@@ -77,6 +78,19 @@ public class DataManagement implements DataManagementLocal {
 				System.out.println("PATH: " + path);
 				ResteasyWebTarget target = client.target(path);
 				Response response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(newHost.getAddress(), MediaType.TEXT_PLAIN));
+			}
+		}
+	}
+	
+	//if master send unregister to all nodes in cluster
+	@Override
+	public void sendUnregisterToAllNodes(String hostAlias, String masterAlias) {
+		for(Host host : hosts.values()) {
+			if(!host.getAlias().equals(hostAlias) && !host.getAlias().equals(masterAlias)) {
+				ResteasyClient client = new ResteasyClientBuilder().build();
+				String path = "http://" + host.getAddress() + "/ChatAppWeb/rest/host/unregister";
+				ResteasyWebTarget target = client.target(path);
+				target.request().post(Entity.entity(hostAlias, MediaType.TEXT_PLAIN));
 			}
 		}
 	}
@@ -115,4 +129,5 @@ public class DataManagement implements DataManagementLocal {
 	public List<User> getUsersOnline() {
 		return usersOnline;
 	}
+
 }
