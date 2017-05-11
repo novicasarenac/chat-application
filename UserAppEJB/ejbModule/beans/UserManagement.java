@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
@@ -39,6 +41,7 @@ public class UserManagement implements UserManagementLocal {
 	}
 	
 	@Override
+	@Lock(LockType.WRITE)
 	public User register(String username, String password) throws UsernameExistsException {
 		User newUser = new User();
 		if(usersOffline.containsKey(username) || usersOnline.containsKey(username)) {
@@ -54,6 +57,7 @@ public class UserManagement implements UserManagementLocal {
 	}
 
 	@Override
+	@Lock(LockType.WRITE)
 	public User login(String username, String password, Host host) throws InvalidCredentialsException, AlreadyLoggedOn {
 		User loggedUser = null;
 		if(usersOffline.containsKey(username)) {
@@ -70,6 +74,7 @@ public class UserManagement implements UserManagementLocal {
 	}
 
 	@Override
+	@Lock(LockType.WRITE)
 	public User logout(User logout) {
 		usersOnline.remove(logout.getUsername());
 		logout.setHost(null);
