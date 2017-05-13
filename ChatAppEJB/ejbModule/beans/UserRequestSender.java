@@ -21,6 +21,7 @@ import jms_messages.UserRequestMessage;
 import jms_messages.UserRequestMessageType;
 import jms_messages.UserResponseMessage;
 import server_management.ChatAppManagementLocal;
+import server_management.SystemPropertiesKeys;
 
 @Stateless
 public class UserRequestSender implements UserRequestSenderLocal {
@@ -63,22 +64,22 @@ public class UserRequestSender implements UserRequestSenderLocal {
 		Response response = null;
 		switch(userRequestMessage.getType()) {
 			case LOGIN: {
-				ResteasyWebTarget target = client.target("http://localhost:8080/UserAppWeb/rest/user/login");
+				ResteasyWebTarget target = client.target("http://" + chatAppManagement.getMaster() + ":" + SystemPropertiesKeys.MASTER_PORT + "/UserAppWeb/rest/user/login");
 				response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(userRequestMessage, MediaType.APPLICATION_JSON));
 				break;
 			}
 			case REGISTER: {
-				ResteasyWebTarget target = client.target("http://localhost:8080/UserAppWeb/rest/user/register");
+				ResteasyWebTarget target = client.target("http://" + chatAppManagement.getMaster() + ":" + SystemPropertiesKeys.MASTER_PORT + "/UserAppWeb/rest/user/register");
 				response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(userRequestMessage, MediaType.APPLICATION_JSON));
 				break;
 			}
 			case LOGOUT: {
-				ResteasyWebTarget target = client.target("http://localhost:8080/UserAppWeb/rest/user/logout");
+				ResteasyWebTarget target = client.target("http://" + chatAppManagement.getMaster() + ":" + SystemPropertiesKeys.MASTER_PORT + "/UserAppWeb/rest/user/logout");
 				response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(userRequestMessage, MediaType.APPLICATION_JSON));
 				break;
 			}
 			case GETALLUSERS: {
-				ResteasyWebTarget target = client.target("http://localhost:8080/UserAppWeb/rest/user/getAllUsers/" + userRequestMessage.getSessionId());
+				ResteasyWebTarget target = client.target("http://" + chatAppManagement.getMaster() + ":" + SystemPropertiesKeys.MASTER_PORT + "/UserAppWeb/rest/user/getAllUsers/" + userRequestMessage.getSessionId());
 				response = target.request(MediaType.APPLICATION_JSON).get();
 				break;
 			}

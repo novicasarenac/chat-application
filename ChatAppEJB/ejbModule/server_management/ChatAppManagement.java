@@ -142,4 +142,9 @@ public class ChatAppManagement implements ChatAppManagementLocal{
 		return local;
 	}
 
+	@Override
+	public String getMaster() {
+		return master;
+	}
+
 }

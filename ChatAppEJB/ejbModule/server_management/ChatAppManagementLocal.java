@@ -13,5 +13,6 @@ public interface ChatAppManagementLocal {
 	public boolean isMaster();
 	public String getLocalAlias();
 	public String getLocal();
+	public String getMaster();
 	
 }
