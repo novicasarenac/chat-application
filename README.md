@@ -16,7 +16,7 @@ java:/jms/queue/messageTransfer
 Publish ChatAppEnterprise.ear and UserAppEnterprise.ear to ```/deployments``` folder into Wildfly.
 
 ## Running application ##
-To start master node of application navigate to ```/configuration``` folder and start Wildfly:
+To start master node of application navigate to ```/bin``` folder and start Wildfly:
 ```
 .\standalone.bat --server-config=standalone-full.xml
 ```
